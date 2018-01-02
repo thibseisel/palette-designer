@@ -17,7 +17,7 @@ import javax.inject.Inject
 class SwatchFragment : Fragment() {
 
     @Inject lateinit var pictureSources: Map<Int, @JvmSuppressWildcards PictureSource>
-    private lateinit var galleryAdapter: ImageGalleryAdapter
+    private lateinit var galleryAdapter: PicturePagerAdapter
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -31,14 +31,15 @@ class SwatchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        galleryAdapter = ImageGalleryAdapter(childFragmentManager)
-        fragmentPager.adapter = galleryAdapter
+        galleryAdapter = PicturePagerAdapter(this)
+        viewPager.adapter = galleryAdapter
+        viewPager.offscreenPageLimit
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        pictureSources[R.string.album_art_source]!!.pictures.toList()
+        pictureSources.getValue(R.string.album_art_source).pictures.toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(galleryAdapter::update)

@@ -1,13 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.github.thibseisel.palettedesigner.MainActivity">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/fragmentPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:view="@layout/view_picture"/>
 
-</FrameLayout>
+    <View
+        android:id="@+id/dominantColorView"
+        android:layout_width="0dp"
+        android:layout_height="128dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewPager"
+        tools:background="#E1E1E1" />
+
+    <View
+        android:id="@+id/lightAccentView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/accentView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dominantColorView"
+        tools:background="#FFFF00" />
+
+    <View
+        android:id="@+id/accentView"
+        android:layout_width="0dp"
+        android:layout_height="128dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/darkAccentView"
+        app:layout_constraintStart_toEndOf="@id/lightAccentView"
+        app:layout_constraintTop_toBottomOf="@id/dominantColorView"
+        tools:background="#FF0000" />
+
+    <View
+        android:id="@+id/darkAccentView"
+        android:layout_width="0dp"
+        android:layout_height="128dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/accentView"
+        app:layout_constraintTop_toBottomOf="@id/dominantColorView"
+        tools:background="#AA00FF" />
+
+</android.support.constraint.ConstraintLayout>
