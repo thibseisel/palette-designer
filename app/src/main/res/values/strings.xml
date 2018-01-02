@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Palette Designer</string>
+    <string name="description_picture">Picture</string>
+    <string name="album_art_source">Album covers</string>
+</resources>
