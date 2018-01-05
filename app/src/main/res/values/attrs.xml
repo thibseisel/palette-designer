@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SwatchView">
+        <!-- A color to display in this swatch view. -->
+        <attr name="swatchColor" format="color" />
+        <!-- A label describing the displayed color. -->
+        <attr name="swatchLabel" format="string" />
+        <!--
+            The color of the checkerboard displayed when no color is set.
+            Default is #E0E0E0.
+        -->
+        <attr name="checkerboardColor" format="color" />
+        <!--
+            Size of each square in the checkerboard shown when no color is set.
+            Default is 16dp.
+        -->
+        <attr name="squareSize" format="dimension" />
+    </declare-styleable>
+</resources>
