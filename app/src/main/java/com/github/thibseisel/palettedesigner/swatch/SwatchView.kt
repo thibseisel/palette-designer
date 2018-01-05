@@ -1,10 +1,7 @@
 package com.github.thibseisel.palettedesigner.swatch
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.support.v4.view.ViewCompat
 import android.support.v7.graphics.Palette
 import android.util.AttributeSet
@@ -16,7 +13,7 @@ import com.github.thibseisel.palettedesigner.toColorHex
 import kotlin.math.roundToInt
 
 private const val DEFAULT_CHECKERBOARD_COLOR: Int = 0xFFE0E0E0.toInt()
-private const val DEFAULT_SQUARE_SIZE_DP = 12f
+private const val DEFAULT_SQUARE_SIZE_DP = 8f
 private const val TEXT_PADDING_DP = 16f
 
 class SwatchView
@@ -52,11 +49,27 @@ class SwatchView
 
     private val textPadding = dpToPixels(context, TEXT_PADDING_DP).roundToInt()
 
-    private var checkerboardSquareSize: Int = dpToPixels(context, DEFAULT_SQUARE_SIZE_DP).roundToInt()
-    private val checkerboardSquareRect = Rect()
-    private val checkerboardSquarePaint = Paint().apply {
+    private val boardRect = Rect()
+    private val boardPaint = Paint().apply {
         style = Paint.Style.FILL
-        color = DEFAULT_CHECKERBOARD_COLOR
+    }
+
+    private fun configureCheckerboard(color: Int, squareSize: Int) {
+        // Create the checkerboard pattern to be repeated
+        val side = 2 * squareSize
+        val template = Bitmap.createBitmap(side, side, Bitmap.Config.ARGB_8888)
+        for (x in 0 until side) {
+            for (y in 0 until side) {
+                val checkerX = x / (squareSize)
+                val checkerY = y / (squareSize)
+                template.setPixel(x, y,
+                        if ((checkerX + checkerY) % 2 == 0) color else Color.TRANSPARENT)
+            }
+        }
+
+        // Use a shader to repeat the checkerboard pattern
+        boardPaint.shader = BitmapShader(template,
+                Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
     }
 
     init {
@@ -65,10 +78,11 @@ class SwatchView
                     defStyleAttr, 0)
             try {
                 label = a.getString(R.styleable.SwatchView_swatchLabel)
-                checkerboardSquarePaint.color = a.getColor(R.styleable.SwatchView_checkerboardColor,
+                val boardColor = a.getColor(R.styleable.SwatchView_checkerboardColor,
                         DEFAULT_CHECKERBOARD_COLOR)
-                checkerboardSquareSize = a.getDimensionPixelSize(R.styleable.SwatchView_squareSize,
+                val squareSize = a.getDimensionPixelSize(R.styleable.SwatchView_squareSize,
                         dpToPixels(context, DEFAULT_SQUARE_SIZE_DP).roundToInt())
+                configureCheckerboard(boardColor, squareSize)
 
                 if (a.hasValue(R.styleable.SwatchView_swatchColor)) {
                     val color = a.getColor(R.styleable.SwatchView_swatchColor, 0)
@@ -83,6 +97,13 @@ class SwatchView
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        measureLabelAndHex(w, h)
+        boardRect.right = w
+        boardRect.bottom = h
+    }
+
+    private fun measureLabelAndHex(w: Int, h: Int) {
+        // A rectangle to hold text bounds
         val bounds = Rect()
 
         // Label is displayed in the top-start corner padded by 8dp
@@ -98,29 +119,10 @@ class SwatchView
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (hasColor) canvas.drawColor(swatchColor) else drawCheckerboard(canvas)
+        if (hasColor) canvas.drawColor(swatchColor) else canvas.drawRect(boardRect, boardPaint)
 
         if (label != null) canvas.drawText(label, labelX, labelY, labelPaint)
         if (colorHex != null) canvas.drawText(colorHex, hexX, hexY, colorHexPaint)
-    }
-
-    private fun drawCheckerboard(canvas: Canvas) {
-        val size = checkerboardSquareSize
-        val w = width
-        val h = height
-
-        for (i in 0 until w) {
-            for (j in 0 until h) {
-                if ((i + j) % 2 == 0) {
-                    canvas.drawRect(checkerboardSquareRect.also {
-                        it.left = i * size
-                        it.top = j * size
-                        it.right = (i + 1) * size
-                        it.bottom = (j + 1) * size
-                    }, checkerboardSquarePaint)
-                }
-            }
-        }
     }
 
     fun setLabel(label: String) {
