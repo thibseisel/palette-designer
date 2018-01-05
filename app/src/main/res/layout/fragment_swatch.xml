@@ -7,52 +7,21 @@
     tools:context="com.github.thibseisel.palettedesigner.MainActivity">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+        android:id="@+id/picturePager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:view="@layout/view_picture"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/dominantColorView"
-        android:layout_width="0dp"
-        android:layout_height="128dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewPager"
-        tools:background="#E1E1E1" />
-
-    <View
-        android:id="@+id/lightAccentView"
-        android:layout_width="0dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/swatchRecycler"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/accentView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dominantColorView"
-        tools:background="#FFFF00" />
-
-    <View
-        android:id="@+id/accentView"
-        android:layout_width="0dp"
-        android:layout_height="128dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/darkAccentView"
-        app:layout_constraintStart_toEndOf="@id/lightAccentView"
-        app:layout_constraintTop_toBottomOf="@id/dominantColorView"
-        tools:background="#FF0000" />
-
-    <View
-        android:id="@+id/darkAccentView"
-        android:layout_width="0dp"
-        android:layout_height="128dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/accentView"
-        app:layout_constraintTop_toBottomOf="@id/dominantColorView"
-        tools:background="#AA00FF" />
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/picturePager"
+        tools:listitem="@layout/item_swatch" />
 
 </android.support.constraint.ConstraintLayout>
