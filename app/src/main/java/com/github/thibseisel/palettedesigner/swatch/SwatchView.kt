@@ -28,8 +28,7 @@ class SwatchView
 
     // Label to be displayed in the top-left corner
     private var label: String? = null
-    private var labelX = 0f
-    private var labelY = 0f
+    private val labelPos = PointF()
     private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
         textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 24f,
                 context.resources.displayMetrics)
@@ -37,10 +36,8 @@ class SwatchView
     }
 
     // String representation of the color to be displayed on the bottom-right
-
     private var colorHex: String? = null
-    private var hexX = 0f
-    private var hexY = 0f
+    private val hexPos = PointF()
     private val colorHexPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
         textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 20f,
                 context.resources.displayMetrics)
@@ -108,21 +105,21 @@ class SwatchView
 
         // Label is displayed in the top-start corner padded by 8dp
         labelPaint.getTextBounds(label.orEmpty(), 0, label?.length ?: 0, bounds)
-        labelX = (ViewCompat.getPaddingStart(this) + textPadding).toFloat()
-        labelY = (paddingTop + textPadding - bounds.top).toFloat()
+        labelPos.x = (ViewCompat.getPaddingStart(this) + textPadding).toFloat()
+        labelPos.y = (paddingTop + textPadding - bounds.top).toFloat()
 
         // colorHex is displayed in the bottom-end corner padded by 8dp
         // Calculate text bounds to subtract them as the text is right aligned.
         colorHexPaint.getTextBounds(colorHex.orEmpty(), 0, colorHex?.length ?: 0, bounds)
-        hexX = (w - ViewCompat.getPaddingEnd(this) - textPadding - bounds.width()).toFloat()
-        hexY = (h - paddingBottom - textPadding - bounds.bottom).toFloat()
+        hexPos.x = (w - ViewCompat.getPaddingEnd(this) - textPadding - bounds.width()).toFloat()
+        hexPos.y = (h - paddingBottom - textPadding - bounds.bottom).toFloat()
     }
 
     override fun onDraw(canvas: Canvas) {
         if (hasColor) canvas.drawColor(swatchColor) else canvas.drawRect(boardRect, boardPaint)
 
-        if (label != null) canvas.drawText(label, labelX, labelY, labelPaint)
-        if (colorHex != null) canvas.drawText(colorHex, hexX, hexY, colorHexPaint)
+        if (label != null) canvas.drawText(label, labelPos.x, labelPos.y, labelPaint)
+        if (colorHex != null) canvas.drawText(colorHex, hexPos.x, hexPos.y, colorHexPaint)
     }
 
     fun setLabel(label: String) {
