@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PaletteDesigner.iml" filepath="$PROJECT_DIR$/PaletteDesigner.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ratioimageview/ratioimageview.iml" filepath="$PROJECT_DIR$/ratioimageview/ratioimageview.iml" />
     </modules>
   </component>
 </project>
