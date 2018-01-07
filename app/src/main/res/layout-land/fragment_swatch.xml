@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:background="@drawable/ic_image_24dp" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.github.thibseisel.palettedesigner.swatch.FadingEdgeRecyclerView
         android:id="@+id/swatchRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"

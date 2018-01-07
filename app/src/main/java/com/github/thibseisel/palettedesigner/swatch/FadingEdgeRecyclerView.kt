@@ -15,9 +15,6 @@ class FadingEdgeRecyclerView
         attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 
-    private val viewBounds = RectF()
-
-    private val fadingEdgeRect = Rect()
     private val fadingEdgePaint = Paint().apply {
         xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
     }
@@ -48,44 +45,38 @@ class FadingEdgeRecyclerView
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
-        viewBounds.set(0f, 0f, width.toFloat(), height.toFloat())
-
         if (h != oldh) {
             configureEdge(edgeLength)
         }
     }
 
+    @Suppress("deprecation")
     override fun dispatchDraw(canvas: Canvas) {
         if (visibility == View.GONE || edgeLength == 0) {
             super.dispatchDraw(canvas)
             return
         }
 
-        val count = canvas.saveLayer(viewBounds, null, Canvas.ALL_SAVE_FLAG)
+        // TODO Use Hardware Layers ?
+        canvas.saveLayer(null, null, Canvas.ALL_SAVE_FLAG)
         super.dispatchDraw(canvas)
-        canvas.drawRect(fadingEdgeRect, fadingEdgePaint)
-        canvas.restoreToCount(count)
+        canvas.drawPaint(fadingEdgePaint)
+        canvas.restore()
     }
 
     private fun configureEdge(@Px length: Int) {
         if (length == 0) {
-            fadingEdgeRect.setEmpty()
             fadingEdgePaint.shader = null
         } else {
-            val actualHeight = paddingTop + height + paddingBottom
+            val actualHeight = (paddingTop + height + paddingBottom)
             val size = minOf(length, actualHeight)
 
-            val left = ViewCompat.getPaddingStart(this)
-            val top = 0
-            val right = ViewCompat.getPaddingEnd(this)
-            val bottom = top + size
+            val left = ViewCompat.getPaddingStart(this).toFloat()
+            val top = 0f
+            val right = ViewCompat.getPaddingEnd(this).toFloat()
+            val bottom = (top + size)
 
-            fadingEdgeRect.set(left, top, right, bottom)
-            fadingEdgePaint.shader = LinearGradient(
-                    left.toFloat(),
-                    top.toFloat(),
-                    right.toFloat(),
-                    bottom.toFloat(),
+            fadingEdgePaint.shader = LinearGradient(left, top, right, bottom,
                     Color.TRANSPARENT, Color.WHITE,
                     Shader.TileMode.CLAMP
             )
