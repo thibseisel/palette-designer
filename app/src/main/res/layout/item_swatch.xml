@@ -3,6 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swatchView"
     android:layout_width="match_parent"
-    android:layout_height="128dp"
+    android:layout_height="@dimen/swatch_height"
     tools:swatchColor="?colorAccent"
     tools:swatchLabel="Color Accent" />

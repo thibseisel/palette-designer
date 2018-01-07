@@ -60,13 +60,12 @@ class SwatchView
                 val checkerX = x / (squareSize)
                 val checkerY = y / (squareSize)
                 template.setPixel(x, y,
-                        if ((checkerX + checkerY) % 2 == 0) color else Color.TRANSPARENT)
+                        if ((checkerX + checkerY) % 2 == 0) color else Color.WHITE)
             }
         }
 
         // Use a shader to repeat the checkerboard pattern
-        boardPaint.shader = BitmapShader(template,
-                Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
+        boardPaint.shader = BitmapShader(template, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
     }
 
     init {

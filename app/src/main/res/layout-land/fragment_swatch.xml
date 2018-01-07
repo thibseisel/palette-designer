@@ -10,35 +10,20 @@
         android:id="@+id/picturePager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="H,1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:background="@drawable/ic_image_24dp" />
-
-    <!--
-        Use a Space to emulate negative margins in ConstraintLayout.
-        The margin amount is the height of this Space.
-     -->
-    <android.support.v4.widget.Space
-        android:id="@+id/overlapSpacer"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/swatch_height"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/picturePager"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/swatchRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingTop="@dimen/swatch_height"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/overlapSpacer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/picturePager"
         tools:listitem="@layout/item_swatch" />
 
 </android.support.constraint.ConstraintLayout>
