@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore.Audio.Albums
 import com.github.thibseisel.palettedesigner.checkPermissionIsGranted
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class AlbumArtPictureSource
@@ -13,7 +14,7 @@ class AlbumArtPictureSource
         private val context: Context
 ) : PictureSource {
 
-    override val pictures: Observable<Picture> = Observable.create { emitter ->
+    override val pictures: Observable<Picture> = Observable.create<Picture> { emitter ->
         context.checkPermissionIsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
 
         context.contentResolver.query(Albums.EXTERNAL_CONTENT_URI,
@@ -34,4 +35,6 @@ class AlbumArtPictureSource
         } ?: throw AssertionError("Query failed: null cursor")
         emitter.onComplete()
     }
+            .cache()
+            .subscribeOn(Schedulers.io())
 }

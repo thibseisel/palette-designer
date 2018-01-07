@@ -23,7 +23,11 @@ class SwatchAdapter(
     override fun onBindViewHolder(holder: SwatchHolder, position: Int) =
             holder.bind(items[position])
 
-    operator fun get(position: Int) = items[position]
+    operator fun get(position: Int): LabeledSwatch {
+        if (position in items.indices) {
+            return items[position]
+        } else throw IndexOutOfBoundsException()
+    }
 
     fun updateWith(swatches: List<LabeledSwatch>) {
         val callback = LabeledSwatchDiff(items, swatches)
@@ -50,32 +54,34 @@ class SwatchAdapter(
             swatchView.setSwatch(swatch.swatch)
         }
     }
-}
 
-class LabeledSwatchDiff(
-        private var oldItems: List<LabeledSwatch>,
-        private var newItems: List<LabeledSwatch>
-) : DiffUtil.Callback() {
+    /**
+     * Calculate differences between 2 sets of swatches.
+     */
+    private class LabeledSwatchDiff(
+            private var oldItems: List<LabeledSwatch>,
+            private var newItems: List<LabeledSwatch>
+    ) : DiffUtil.Callback() {
 
-    override fun getOldListSize() = oldItems.size
+        override fun getOldListSize() = oldItems.size
 
-    override fun getNewListSize() = newItems.size
+        override fun getNewListSize() = newItems.size
 
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val old = oldItems[oldItemPosition]
-        val new = newItems[newItemPosition]
-        // If labels are the same, then its the same kind of color swatch
-        return old.label == new.label
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldItems[oldItemPosition]
+            val new = newItems[newItemPosition]
+            // If labels are the same, then its the same kind of color swatch
+            return old.label == new.label
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldItems[oldItemPosition]
+            val new = newItems[newItemPosition]
+
+            val sameLabel = old.label == new.label
+            val sameSwatch = old.swatch == new.swatch
+
+            return sameLabel && sameSwatch
+        }
     }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val old = oldItems[oldItemPosition]
-        val new = newItems[newItemPosition]
-
-        val sameLabel = old.label == new.label
-        val sameSwatch = old.swatch == new.swatch
-
-        return sameLabel && sameSwatch
-    }
-
 }

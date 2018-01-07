@@ -1,15 +1,19 @@
 package com.github.thibseisel.palettedesigner.swatch
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.ViewPager
 import android.support.v7.graphics.Palette
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.thibseisel.palettedesigner.R
+import com.github.thibseisel.palettedesigner.media.MediaChooserFragment
 import com.github.thibseisel.palettedesigner.media.PictureSource
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,18 +21,29 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_swatch.*
 import javax.inject.Inject
 
-private const val TAG = "SwatchFragment"
-
 class SwatchFragment : Fragment(), ViewPager.OnPageChangeListener {
 
-    @Inject lateinit var pictureSources: Map<Int, @JvmSuppressWildcards PictureSource>
-    private lateinit var picturesAdapter: PicturePagerAdapter
+    private companion object {
+        private const val REQUEST_CHOOSE_PICTURE = 99
+    }
 
+    @Inject lateinit var pictureSources: Map<Int, @JvmSuppressWildcards PictureSource>
+
+    private lateinit var picturesAdapter: PicturePagerAdapter
     private lateinit var swatchAdapter: SwatchAdapter
+
+    private val handler = Handler()
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        picturesAdapter = PicturePagerAdapter(this, ::onPaletteGenerated)
+        swatchAdapter = SwatchAdapter(::onSwatchSelected)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -38,15 +53,10 @@ class SwatchFragment : Fragment(), ViewPager.OnPageChangeListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        picturesAdapter = PicturePagerAdapter(this)
-        picturePager.adapter = picturesAdapter
-        picturePager.addOnPageChangeListener(this)
-
-        swatchAdapter = SwatchAdapter { position ->
-            Log.d(TAG, "Selected swatch at position = $position")
-            val pickedSwatch = swatchAdapter[position]
-            val holder = swatchRecycler.findViewHolderForAdapterPosition(position)
-            // TODO Activity transition
+        with(picturePager) {
+            adapter = picturesAdapter
+            addOnPageChangeListener(this@SwatchFragment)
+            setOnClickListener { openPictureChooser() }
         }
 
         swatchRecycler.adapter = swatchAdapter
@@ -61,20 +71,69 @@ class SwatchFragment : Fragment(), ViewPager.OnPageChangeListener {
                 .subscribe(picturesAdapter::update)
     }
 
-    override fun onPageScrollStateChanged(state: Int) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == REQUEST_CHOOSE_PICTURE && resultCode == RESULT_OK) {
+            // A picture has been picked in the picture chooser
+            val position = data?.getIntExtra(MediaChooserFragment.EXTRA_PICTURE_POSITION, 0) ?: 0
+            onPictureSelectedFromChooser(position)
+        }
+    }
+
+    /**
+     * Open the picture chooser.
+     */
+    private fun openPictureChooser() {
+        val chooserFragment = MediaChooserFragment.newInstance(picturePager.currentItem)
+        chooserFragment.setTargetFragment(this, REQUEST_CHOOSE_PICTURE)
+
+        fragmentManager!!.beginTransaction()
+                .replace(R.id.container, chooserFragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit()
+    }
+
+    private fun onPictureSelectedFromChooser(position: Int) {
+        // Post the action so that the fragment can instantiate its views before handling action
+        handler.post { picturePager.currentItem = position }
+    }
+
+    /**
+     * Called when a color palette has been generated for the picture at the given position.
+     *
+     * @param position Position of the picture whose palette has been generated in the adapter.
+     */
+    private fun onPaletteGenerated(position: Int, palette: Palette) {
+        if (position == picturePager.currentItem) {
+            updateSwatchesFromPalette(palette)
+        }
+    }
+
+    /**
+     * Called when a swatch associated with the currently displayed picture
+     * has been selected.
+     *
+     * @param position Position of the selected swatch in the list backed by [swatchAdapter].
+     */
+    private fun onSwatchSelected(position: Int) {
+        // TODO Activity transition
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {
+        // Do nothing.
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
+        // Do nothing.
     }
 
     override fun onPageSelected(position: Int) {
-        picturesAdapter.paletteAtPosition(position)?.let(this::updateSwatchesFromPalette)
+        picturesAdapter.paletteAtPosition(position)?.let(::updateSwatchesFromPalette)
     }
 
     private fun updateSwatchesFromPalette(palette: Palette) {
-
         swatchAdapter.updateWith(listOf(
                 LabeledSwatch("Dominant", palette.dominantSwatch),
                 LabeledSwatch("Light Vibrant", palette.lightVibrantSwatch),

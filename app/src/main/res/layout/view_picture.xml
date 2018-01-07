@@ -7,4 +7,7 @@
     android:layout_height="match_parent"
     android:contentDescription="@string/description_picture"
     android:scaleType="fitCenter"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?selectableItemBackground"
     tools:src="@drawable/ic_image_24dp" />
