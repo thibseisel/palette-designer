@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mtrl_blue_500">#3F51B5</color>
-    <color name="mtrl_blue_700">#303F9F</color>
+    <color name="mtrl_indigo_500">#3F51B5</color>
+    <color name="mtrl_indigo_700">#303F9F</color>
+    <color name="mtrl_indigo_a400">#3D5AFE</color>
     <color name="mtrl_pink_a400">#FF4081</color>
 
     <color name="mtrl_grey_100">#F5F5F5</color>

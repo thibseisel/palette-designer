@@ -1,9 +1,7 @@
 <resources>
 
     <style name="Base.AppTheme" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/mtrl_blue_500</item>
-        <item name="colorPrimaryDark">@color/mtrl_blue_700</item>
-
+        <item name="colorAccent">@color/mtrl_indigo_a400</item>
         <item name="actionBarTheme">@style/ThemeOverlay.AppTheme.ActionBar</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppTheme.Popup</item>
     </style>
@@ -12,7 +10,7 @@
 
     <style name="ThemeOverlay.AppTheme.ActionBar" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorPrimary">@color/mtrl_grey_100</item>
-        <item name="android:textColorPrimary">@color/mtrl_blue_500</item>
+        <item name="android:textColorPrimary">@color/mtrl_indigo_a400</item>
     </style>
     
     <style name="ThemeOverlay.AppTheme.Popup" parent="ThemeOverlay.AppCompat.Light"/>
