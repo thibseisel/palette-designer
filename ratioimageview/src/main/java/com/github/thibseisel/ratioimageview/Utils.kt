@@ -1,7 +1,7 @@
 package com.github.thibseisel.ratioimageview
 
 /**
- * Parse the dimensionRatio string property to a number.
+ * Parse the aspectRatio string property to a number.
  * The dimension string accepts the following formats:
  * - `W:H` where `W` is width and `H` the height (fraction form)
  * - `R` where R is the result of width / height (decimal form)
