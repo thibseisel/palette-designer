@@ -21,24 +21,33 @@
         The margin amount is the height of this Space.
      -->
     <android.support.v4.widget.Space
-        android:id="@+id/overlapSpacer"
+        android:id="@+id/negativeMargin"
         android:layout_width="match_parent"
         android:layout_height="@dimen/swatch_height"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/picturePager"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/picturePager"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/swatchRecycler"
+    <com.bosphere.fadingedgelayout.FadingEdgeLayout
+        android:id="@+id/fadingEdgeLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingTop="@dimen/swatch_height"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/overlapSpacer"
+        app:fel_edge="top"
+        app:fel_size_top="64dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_swatch" />
+        app:layout_constraintTop_toTopOf="@id/negativeMargin"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/swatchRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/swatch_height"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_swatch" />
+
+    </com.bosphere.fadingedgelayout.FadingEdgeLayout>
 
 </android.support.constraint.ConstraintLayout>
